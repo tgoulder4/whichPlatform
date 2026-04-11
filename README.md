@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# RealTimeTrains status emitter
 
-## Getting Started
+Small Next.js app that polls RealTimeTrains and pushes a simplified “service status” view for a given route. It focuses on turning the API into something you can easily display on a dashboard, stream overlay or status screen.
 
-First, run the development server:
+The project is a standard `app/`-router Next.js + TypeScript + Tailwind stack. Configuration is done through environment variables and a thin client in `src/app/page.tsx` that calls a server route to fetch and normalise data.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## How it works
+
+At a high level:
+
+```ts
+// src/app/page.tsx (simplified)
+const response = await fetch('/api/status');
+const status = await response.json();
+
+// render reduced status
+return <StatusPanel data={status} />;
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The API route encapsulates the RealTimeTrains integration:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```ts
+// src/app/api/status/route.ts (shape)
+export async function GET() {
+  const raw = await fetchRealTimeTrains({ /* origin, destination, time */ });
+  const mapped = mapToStatus(raw);
+  return Response.json(mapped);
+}
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+The mapping step strips the RealTimeTrains response down to the essentials for a display:
 
-## Learn More
+```ts
+type ServiceStatus = {
+  serviceId: string;
+  scheduled: string;
+  expected: string;
+  platform?: string;
+  cancelled: boolean;
+};
 
-To learn more about Next.js, take a look at the following resources:
+function mapToStatus(raw: unknown): ServiceStatus[] {
+  // take the upstream response and produce a small, typed model
+  return [];
+}
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Styling uses Tailwind with a small component layer:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```ts
+// src/components/status-panel.tsx (example)
+export function StatusPanel({ data }: { data: ServiceStatus[] }) {
+  return (
+    <div className="grid gap-2">
+      {data.map(item => (
+        <div
+          key={item.serviceId}
+          className={item.cancelled ? 'bg-red-100' : 'bg-emerald-100'}
+        >
+          <span>{item.scheduled}</span>
+          <span>{item.expected}</span>
+          {item.platform && <span>Platform {item.platform}</span>}
+        </div>
+      ))}
+    </div>
+  );
+}
+```
 
-## Deploy on Vercel
+Environment configuration is kept in `next.config.mjs` / `process.env` and wired into the fetch helper, e.g.:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```ts
+const API_KEY = process.env.RTT_API_KEY;
+const ORIGIN = process.env.RTT_ORIGIN;
+const DESTINATION = process.env.RTT_DESTINATION;
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+---
+
+## Running locally
+
+```bash
+npm install
+npm run dev
+# then visit http://localhost:3000
+```
+
+You will need appropriate RealTimeTrains configuration in your environment (API key, origin / destination etc.) before the status endpoint can return anything meaningful.
