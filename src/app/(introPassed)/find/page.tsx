@@ -159,7 +159,7 @@ export default function Home({ searchParams }: { searchParams: { [key: string]: 
         return () => clearInterval(timer);
     }, []);
     return (
-        <main className="flex min-h-fit flex-col pb-48" style={{ backgroundImage: "url('backdrop.jpg')", backgroundSize: '1280px', backgroundPositionX: '50%' }} >
+        <main className="flex min-h-fit flex-col pb-48"  >
             <div className={`hidden ${maxWidthClassNames}`}></div>
             <div className={`navArea top-0 left-0 z-10 w-full pt-8 md:pt-16 pb-4  bg-zinc-900 bg-opacity-40`}>
                 <div className={`${maxWidthClassNames} flex flex-col gap-8 items-center px-8 pt-8 md:px-16 md:mx-auto md:pt-0`}>
@@ -238,7 +238,7 @@ export default function Home({ searchParams }: { searchParams: { [key: string]: 
                 {/* </div> */}
                 <div className="bg-black text-white bottom-0 text-left w-full sticky flex justify-between">
                     <h3 className="font-normal">© Tye Goulder</h3>
-                    <h3 className="font-normal">BTR will soon be a paid service</h3>
+                    {/* <h3 className="font-normal">BTR will soon be a paid service</h3> */}
                     <a href="/faq" className="underline">FAQ</a>
                 </div>
             </div>

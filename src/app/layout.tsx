@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className + " bg-zinc-100 font-semibold"} style={{ backgroundImage: "url('backdrop.jpg')", backgroundSize: '100%' }}>
+      <body className={inter.className + " bg-zinc-100 font-semibold"} style={{ backgroundImage: "url('backdrop.jpg')", backgroundSize: 'cover' }}>
         <Toaster className={inter.className} position="top-center" />
         {/* {applicationStatus == "maintenance" ? <UnderMaintenancePage /> : children} */}
         {children}

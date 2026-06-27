@@ -11,7 +11,7 @@ function FAQPage({ }: Props) {
         </div>
     }
     const faqs: { q: string, a: string }[] = [
-        { q: 'What if the platform is wrong?', a: "It won't be. In the impossible sighting this is the case, the system will correct itself within 10 seconds. Feel free to contact me should issues arise." }
+        { q: 'What if the platform is wrong?', a: "In this rare case, the system will correct itself within 10 seconds. Feel free to contact me should this issue arise on multiple occasions." }
     ]
     return (
         <>
